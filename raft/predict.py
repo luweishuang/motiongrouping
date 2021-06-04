@@ -18,6 +18,7 @@ from utils.utils import InputPadder
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+
 def writeFlowFile(filename, uv):
     """
     According to the matlab code of Deqing Sun and c++ source code of Daniel Scharstein
@@ -42,15 +43,22 @@ def load_image(imfile, resolution=None):
         img = img.resize(resolution, PIL.Image.ANTIALIAS)
     img = np.array(img).astype(np.uint8)
     img = torch.from_numpy(img).permute(2, 0, 1).float()
-    return img[None].to(DEVICE)
+    out = img[None]
+    if DEVICE == "cuda":
+        out = img[None].to(DEVICE)
+    return out
 
 
 def predict(args):
     model = torch.nn.DataParallel(RAFT(args))
-    model.load_state_dict(torch.load(args.model))
+    if DEVICE == "cuda":
+        model.load_state_dict(torch.load(args.model))
+    else:
+        model.load_state_dict(torch.load(args.model, map_location=torch.device('cpu')))
     model = model.module
 
-    model.to(DEVICE)
+    if DEVICE == "cuda":
+        model.to(DEVICE)
     model.eval()
 
     with torch.no_grad():

@@ -1,10 +1,10 @@
 import os
 import glob as gb
 
-data_path = "/path/to/dataset"
+data_path = "/data/motionGrouping/data/DAVIS2016"
 gap = [1, 2]
 reverse = [0, 1]
-rgbpath = data_path + '/JPEGImages'  # path to the dataset
+rgbpath = os.path.join(data_path, 'JPEGImages/1080p')  # path to the dataset
 folder = gb.glob(os.path.join(rgbpath, '*'))
 
 for r in reverse:

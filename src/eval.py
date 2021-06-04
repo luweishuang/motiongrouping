@@ -77,6 +77,7 @@ def eval(val_loader, model, device, moca, use_flow, it, resultsPath=None, writer
             writer.add_scalar('IOU/val_single_step_mean', frame_single_step_mean_iou, it)
             return frame_mean_iou
 
+
 def main(args):
     lr = args.lr
     epsilon = 1e-5
@@ -152,7 +153,7 @@ if __name__ == "__main__":
     parser.add_argument('--num_iterations', type=int, default=5)
     #misc
     parser.add_argument('--verbose', type=str, default=None)
-    parser.add_argument('--resume_path', type=str, default=None)
+    parser.add_argument('--resume_path', type=str, default="../models/ckpt_davis.pth")
     args = parser.parse_args()
     args.inference = True
     main(args)

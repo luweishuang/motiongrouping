@@ -57,24 +57,22 @@ def setup_dataset(args):
     with_gt = True
     pairs = [1, 2, -1, -2]
     if args.dataset == 'DAVIS':
-        
-        basepath = '/path/to/SlotAttention/data/DAVIS2016'
-        img_dir = '/path/to/SlotAttention/data/DAVIS2016/JPEGImages/480p'
-        gt_dir ='/path/to/SlotAttention/data/DAVIS2016/Annotations/480p'
+        basepath = '/data/motionGrouping/data/DAVIS2016'
+        img_dir = os.path.join(basepath, 'JPEGImages/480p')
+        gt_dir = os.path.join(basepath, 'Annotations/480p')
 
-        val_flow_dir = '/path/to/SlotAttention/data/DAVIS2016/Flows_gap1/1080p'
+        val_flow_dir = os.path.join(basepath, 'Flows_gap1/1080p')
         val_seq = ['dog', 'cows', 'goat', 'camel', 'libby', 'parkour', 'soapbox', 'blackswan', 'bmx-trees', 
                     'kite-surf', 'car-shadow', 'breakdance', 'dance-twirl', 'scooter-black', 'drift-chicane', 
                     'motocross-jump', 'horsejump-high', 'drift-straight', 'car-roundabout', 'paragliding-launch']            
         val_data_dir = [val_flow_dir, img_dir, gt_dir]
         res = "1080p"
-
     elif args.dataset == 'FBMS':
-        basepath = '/path/to/FBMS_clean'
-        img_dir = '/path/to/FBMS_clean/JPEGImages/'
-        gt_dir ='/path/to/FBMS_clean/Annotations/'    
+        basepath = '/data/motionGrouping/data/FBMS_clean'
+        img_dir = os.path.join(basepath, 'JPEGImages/')
+        gt_dir = os.path.join(basepath, 'Annotations/')
 
-        val_flow_dir = '/path/to/FBMS_val/Flows_gap1/'
+        val_flow_dir = os.path.join(basepath, '/path/to/FBMS_val/Flows_gap1/')
         val_seq = ['camel01', 'cars1', 'cars10', 'cars4', 'cars5', 'cats01', 'cats03', 'cats06', 
                     'dogs01', 'dogs02', 'farm01', 'giraffes01', 'goats01', 'horses02', 'horses04', 
                     'horses05', 'lion01', 'marple12', 'marple2', 'marple4', 'marple6', 'marple7', 'marple9', 
@@ -84,23 +82,21 @@ def setup_dataset(args):
         val_data_dir = [val_flow_dir, val_img_dir, val_gt_dir]
         with_gt = False
         pairs = [3, 6, -3, -6]
-
     elif args.dataset == 'STv2':
-        basepath = '/path/to/SegTrackv2'
-        img_dir = '/path/to/SegTrackv2/JPEGImages'
-        gt_dir ='/path/to/SegTrackv2/Annotations'
+        basepath = '/data/motionGrouping/data/SegTrackv2'
+        img_dir = os.path.join(basepath, 'JPEGImages')
+        gt_dir = os.path.join(basepath, 'Annotations')
 
-        val_flow_dir = '/path/to/SegTrackv2/Flows_gap1/'
+        val_flow_dir = os.path.join(basepath, 'Flows_gap1')
         val_seq = ['drift', 'birdfall', 'girl', 'cheetah', 'worm', 'parachute', 'monkeydog',
                     'hummingbird', 'soldier', 'bmx', 'frog', 'penguin', 'monkey', 'bird_of_paradise']
         val_data_dir = [val_flow_dir, img_dir, gt_dir]
-
     elif args.dataset == 'MoCA':
-        basepath = '/path/to/MoCA_filtered'
-        img_dir = '/path/to/MoCA_filtered/JPEGImages'
-        gt_dir ='/path/to/MoCA_filtered/Annotations'
+        basepath = '/data/motionGrouping/data/MoCA/MoCA_filtered'
+        img_dir = os.path.join(basepath, 'JPEGImages')
+        gt_dir = os.path.join(basepath, 'Annotations')
 
-        val_flow_dir = '/path/to/MoCA_filtered/Flows_gap1/'
+        val_flow_dir = os.path.join(basepath,  'Flows_gap1/')
         val_seq = ['arabian_horn_viper', 'arctic_fox_1', 'arctic_wolf_1', 'black_cat_1', 'crab', 'crab_1', 
                     'cuttlefish_0', 'cuttlefish_1', 'cuttlefish_4', 'cuttlefish_5', 
                     'devil_scorpionfish', 'devil_scorpionfish_1', 'flatfish_2', 'flatfish_4', 'flounder', 

@@ -10,11 +10,13 @@ def combine(dir1, dir2):
 		ims = np.clip(im1+im2, 0, 255)
 		cv2.imwrite(dir1[i].replace('/1/', '/'), ims)
 
+
 cats = ['hummingbird', 'drift', 'bmx', 'monkeydog', 'cheetah']
 for cat in cats:
 	dir1 = sorted(gb.glob('/scratch/shared/beegfs/charig/SegTrackv2/Annotations/{}/1/*.png'.format(cat)))
 	dir2 = sorted(gb.glob('/scratch/shared/beegfs/charig/SegTrackv2/Annotations/{}/2/*.png'.format(cat)))
 	combine(dir1, dir2)
+
 """
 cat = 'penguin'
 dir1 = sorted(gb.glob('/scratch/shared/beegfs/charig/SegTrackv2/Annotations/{}/1/*.png'.format(cat)))
