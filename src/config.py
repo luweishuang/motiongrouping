@@ -62,9 +62,10 @@ def setup_dataset(args):
         gt_dir = os.path.join(basepath, 'Annotations/480p')
 
         val_flow_dir = os.path.join(basepath, 'Flows_gap1/1080p')
-        val_seq = ['dog', 'cows', 'goat', 'camel', 'libby', 'parkour', 'soapbox', 'blackswan', 'bmx-trees', 
-                    'kite-surf', 'car-shadow', 'breakdance', 'dance-twirl', 'scooter-black', 'drift-chicane', 
-                    'motocross-jump', 'horsejump-high', 'drift-straight', 'car-roundabout', 'paragliding-launch']            
+        # val_seq = ['dog', 'cows', 'goat', 'camel', 'libby', 'parkour', 'soapbox', 'blackswan', 'bmx-trees',
+        #             'kite-surf', 'car-shadow', 'breakdance', 'dance-twirl', 'scooter-black', 'drift-chicane',
+        #             'motocross-jump', 'horsejump-high', 'drift-straight', 'car-roundabout', 'paragliding-launch']
+        val_seq = ['bmx-trees', 'boat', 'dance-twirl', 'drift-chicane']
         val_data_dir = [val_flow_dir, img_dir, gt_dir]
         res = "1080p"
     elif args.dataset == 'FBMS':
@@ -122,7 +123,7 @@ def setup_dataset(args):
     else:
         raise ValueError('Unknown Setting.')
 
-    pair_list = [p for p in itertools.combinations(pairs , 2)]
+    pair_list = [p for p in itertools.combinations(pairs, 2)]
     folders = [os.path.basename(x) for x in gb.glob(os.path.join(basepath, 'Flows_gap1/{}/*'.format(res)))]
     flow_dir = {}
     for pair in pair_list:

@@ -8,11 +8,11 @@ import utils as ut
 import config as cg
 import torch
 import torchvision
-import torch.nn as nn
 import torch.optim as optim
-from tensorboardX import SummaryWriter
 from argparse import ArgumentParser
 from model import SlotAttentionAutoEncoder
+
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
 def eval(val_loader, model, device, moca, use_flow, it, resultsPath=None, writer=None, train=False):
@@ -40,7 +40,6 @@ def eval(val_loader, model, device, moca, use_flow, it, resultsPath=None, writer
                 single_step_ious[category].append(single_step_iou)
                 ious[category].append(iou)
                 if not train:
-                    #save
                     for mi, save_mask in enumerate(save_masks):
                         fgp = fgap[mi][0]
                         save_mask = einops.rearrange(save_mask, 'c h w -> h w c')
@@ -51,7 +50,6 @@ def eval(val_loader, model, device, moca, use_flow, it, resultsPath=None, writer
                     cv2.imwrite(os.path.join(resultsPath, category, 'mean', index), (mean_mask * 255.))
 
             if train:
-            #save
                 if np.random.random() > 0.95:
                     grid = ut.convert_for_vis(flows.unsqueeze(1), use_flow=use_flow)
                     grid_ri = ut.convert_for_vis(recon_image, use_flow=use_flow).unsqueeze(1)
@@ -80,13 +78,8 @@ def eval(val_loader, model, device, moca, use_flow, it, resultsPath=None, writer
 
 def main(args):
     lr = args.lr
-    epsilon = 1e-5
     num_slots = args.num_slots
     iters = args.num_iterations
-    batch_size = args.batch_size
-    warmup_it = args.warmup_steps
-    decay_step = args.decay_steps
-    num_it = args.num_train_steps
     resume_path = args.resume_path
     batch_size = 1
     args.resolution = (128, 224)
@@ -94,32 +87,31 @@ def main(args):
     # setup log and model path, initialize tensorboard,
     [logPath, modelPath, resultsPath] = cg.setup_path(args)
 
-    # initialize dataloader (validation bsz has to be 1 for FBMS, because of different resolutions, otherwise, can be >1)
+    # initialize dataloader
     trn_dataset, val_dataset, resolution, in_out_channels, use_flow, loss_scale, ent_scale, cons_scale = cg.setup_dataset(args)
-    trn_loader = ut.FastDataLoader(
-        trn_dataset, num_workers=8, batch_size=batch_size, shuffle=True, pin_memory=True, drop_last=True)
     val_loader = ut.FastDataLoader(
         val_dataset, num_workers=8, batch_size=1, shuffle=False, pin_memory=True, drop_last=False)
     # initialize model
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     model = SlotAttentionAutoEncoder(resolution=resolution,
                                      num_slots=num_slots,
                                      in_out_channels=in_out_channels,
                                      iters=iters)
-    model.to(device)
+    if DEVICE == "cuda":
+        model.to(DEVICE)
 
     # initialize training
-    criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
     it = 0
     if resume_path:
         print('resuming from checkpoint')
-        checkpoint = torch.load(resume_path)
+        if DEVICE == "cuda":
+            checkpoint = torch.load(resume_path)
+        else:
+            checkpoint = torch.load(resume_path, map_location=torch.device('cpu'))
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         it = checkpoint['iteration']
-        loss = checkpoint['loss']
         model.eval()
     else:
         print('no checkpouint found')
@@ -130,9 +122,9 @@ def main(args):
     else:
         moca = False
 
-    print('======> start inference {}, {}, use {}.'.format(args.dataset, args.verbose, device))
-    #inference / evaluate on validation set
-    eval(val_loader, model, device, moca, use_flow, it, resultsPath=resultsPath, train=False)
+    print('======> start inference {}, {}, use {}.'.format(args.dataset, args.verbose, DEVICE))
+    # evaluate on validation set
+    eval(val_loader, model, DEVICE, moca, use_flow, it, resultsPath=resultsPath, train=False)
 
 
 if __name__ == "__main__":

@@ -27,9 +27,11 @@ def readRGB(sample_dir, resolution):
     rgb = np.clip(rgb, -1., 1.)
     return einops.rearrange(rgb, 'h w c -> c h w')
 
+
 def readSeg(sample_dir):
     gt = cv2.imread(sample_dir) / 255
     return einops.rearrange(gt, 'h w c -> c h w')
+
 
 class FlowPair(Dataset):
     def __init__(self, data_dir, resolution, to_rgb=False, with_rgb=False, with_gt=True):
