@@ -96,7 +96,7 @@ def main(args):
 
     print("initialize dataloader")
     trn_dataset, val_dataset, resolution, in_out_channels, use_flow, loss_scale, ent_scale, cons_scale = cg.setup_dataset(args)
-    val_loader = ut.FastDataLoader(val_dataset, num_workers=8, batch_size=1, shuffle=False, pin_memory=True, drop_last=False)
+    val_loader = ut.FastDataLoader(val_dataset, num_workers=0, batch_size=1, shuffle=False, pin_memory=True, drop_last=False)
     print("initialize model ")
     model = SlotAttentionAutoEncoder(resolution=resolution,
                                      num_slots=num_slots,
