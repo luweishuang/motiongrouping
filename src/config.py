@@ -57,7 +57,7 @@ def setup_dataset(args):
     with_gt = True
     pairs = [1, 2, -1, -2]
     if args.dataset == 'DAVIS':
-        basepath = '/data/motionGrouping/data/DAVIS2016'
+        basepath = '/data/pfc/motionGrouping/DAVIS'
         img_dir = os.path.join(basepath, 'JPEGImages/480p')
         gt_dir = os.path.join(basepath, 'Annotations/480p')
 
