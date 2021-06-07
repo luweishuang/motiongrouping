@@ -147,9 +147,10 @@ def setup_dataset(args):
     # flow_dir is a dictionary, with keys indicating the flow gap, and each value is a list of sequence names,
     # each item then is an array with Nx2, N indicates the number of available pairs.
     data_dir = [flow_dir, img_dir, gt_dir]
+    print("initialize trn_dataset = FlowPair")
     trn_dataset = FlowPair(data_dir=data_dir, resolution=resolution, to_rgb=args.flow_to_rgb,
                             with_rgb=False, with_gt=with_gt)
-    
+    print("initialize val_dataset = FlowEval")
     val_dataset = FlowEval(data_dir=val_data_dir, resolution=resolution, pair_list=pairs, 
                             val_seq=val_seq, to_rgb=args.flow_to_rgb, with_rgb=False)
 
