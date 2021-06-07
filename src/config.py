@@ -38,6 +38,7 @@ def setup_path(args):
 
     if inference:
         resultsPath = os.path.join('../results/', args.resume_path.split('/')[-1])
+        print("inference resultsPath: ", resultsPath)
         os.makedirs(resultsPath, exist_ok=True)
     else:
         os.makedirs(logPath, exist_ok=True)
