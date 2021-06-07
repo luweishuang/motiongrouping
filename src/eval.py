@@ -13,6 +13,7 @@ from argparse import ArgumentParser
 from model import SlotAttentionAutoEncoder
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+print("DEVICE = ", DEVICE)
 
 
 def eval(val_loader, model, device, moca, use_flow, it, resultsPath=None, writer=None, train=False):
@@ -23,8 +24,11 @@ def eval(val_loader, model, device, moca, use_flow, it, resultsPath=None, writer
         print(' --> running inference')
         for idx, val_sample in enumerate(val_loader):
             flows, gt, meta, fgap = val_sample
-            flows = flows.float().to(device)  # b t c h w
-            gt = gt.float().to(device)  # b c h w
+            flows = flows.float()  # b t c h w
+            gt = gt.float() # b c h w
+            if DEVICE == "cuda":
+                flows.to(device)
+                gt.to(device)
             category, index = meta[0][0], meta[1][0]
 
             if category not in ious.keys(): ious[category] = []
