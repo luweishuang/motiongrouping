@@ -69,7 +69,6 @@ def eval(val_loader, model, moca, use_flow, it, resultsPath=None, writer=None, t
                     grid_all = torchvision.utils.make_grid(grid_all, nrow=nrow)
                     writer.add_image('val/images', grid_all, it+idx)
 
-
         frameious = sum(ious.values(), [])
         single_step_frameious = sum(single_step_ious.values(), [])
         frame_mean_iou = sum(frameious) / len(frameious)

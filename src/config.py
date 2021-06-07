@@ -139,7 +139,7 @@ def setup_dataset(args):
 
             intersect = list(set(flows1).intersection(flows2))
             intersect.sort()
-
+            print("p1=%d, p2=%d, len(intersect)=%d" % (p1, p2, len(intersect)))
             flowpair = np.array([[os.path.join(path1, i), os.path.join(path2, i)] for i in intersect])
             flowpairs += [flowpair]
         flow_dir['gap_{}_{}'.format(p1, p2)] = flowpairs
