@@ -59,6 +59,7 @@ def setup_dataset(args):
     pairs = [1, 2, -1, -2]
     if args.dataset == 'DAVIS':
         basepath = '/data/pfc/motionGrouping/DAVIS'
+        # basepath = "/data/motionGrouping/data/DAVIS2016"
         img_dir = os.path.join(basepath, 'JPEGImages/480p')
         gt_dir = os.path.join(basepath, 'Annotations/480p')
 
@@ -139,7 +140,6 @@ def setup_dataset(args):
 
             intersect = list(set(flows1).intersection(flows2))
             intersect.sort()
-            print("p1=%d, p2=%d, len(intersect)=%d" % (p1, p2, len(intersect)))
             flowpair = np.array([[os.path.join(path1, i), os.path.join(path2, i)] for i in intersect])
             flowpairs += [flowpair]
         flow_dir['gap_{}_{}'.format(p1, p2)] = flowpairs
