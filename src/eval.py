@@ -31,10 +31,13 @@ def eval(val_loader, model, moca, use_flow, it, resultsPath=None, writer=None, t
                 gt.to(DEVICE)
             category, index = meta[0][0], meta[1][0]
 
-            if category not in ious.keys(): ious[category] = []
-            if category not in single_step_ious.keys(): single_step_ious[category] = []
-            #run inference
+            if category not in ious.keys():
+                ious[category] = []
+            if category not in single_step_ious.keys():
+                single_step_ious[category] = []
+            # run inference
             flows = einops.rearrange(flows, 'b t c h w -> (b t) c h w')
+            print("eval run model ")
             recon_image, recons, masks, _ = model(flows)  # t s 1 h w
             masks = einops.rearrange(masks, '(b t) s c h w -> b t s c h w', t=4)
             for i in range(masks.size()[0]):
@@ -101,6 +104,7 @@ def main(args):
                                      in_out_channels=in_out_channels,
                                      iters=iters)
     if DEVICE == "cuda":
+        print("model to ", DEVICE)
         model.to(DEVICE)
 
     # initialize training
