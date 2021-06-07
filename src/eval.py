@@ -98,7 +98,7 @@ def main(args):
     trn_dataset, val_dataset, resolution, in_out_channels, use_flow, loss_scale, ent_scale, cons_scale = cg.setup_dataset(args)
     val_loader = ut.FastDataLoader(
         val_dataset, num_workers=8, batch_size=1, shuffle=False, pin_memory=True, drop_last=False)
-    # initialize model
+    print("initialize model ")
     model = SlotAttentionAutoEncoder(resolution=resolution,
                                      num_slots=num_slots,
                                      in_out_channels=in_out_channels,
@@ -107,7 +107,7 @@ def main(args):
         print("model to ", DEVICE)
         model.to(DEVICE)
 
-    # initialize training
+    print("initialize training")
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
     it = 0
