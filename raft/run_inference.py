@@ -1,7 +1,7 @@
 import os
 import glob as gb
 
-data_path = "/data/motionGrouping/data/DAVIS2016"
+data_path = "/data/pfc/motionGrouping/DAVIS2016"
 gap = [1, 2]
 reverse = [0, 1]
 rgbpath = os.path.join(data_path, 'JPEGImages/1080p')  # path to the dataset
@@ -19,5 +19,5 @@ for r in reverse:
         raw_outroot = data_path + '/Flows_gap{}/'.format(g)   # where to raw flow
         outroot = data_path + '/FlowImages_gap{}/'.format(g)   # where to save the image flow
       os.system("python predict.py "
-                "--gap {} --mode {} --path {} "
+                "--gap {} --model {} --path {} "
                 "--outroot {} --reverse {} --raw_outroot {}".format(g, mode, f, outroot, r, raw_outroot))
