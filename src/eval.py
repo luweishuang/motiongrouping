@@ -140,6 +140,7 @@ if __name__ == "__main__":
     parser.add_argument('--dataset', type=str, default='DAVIS', choices=['DAVIS', 'MoCA', 'FBMS', 'STv2'])
     parser.add_argument('--with_rgb', action='store_true')
     parser.add_argument('--flow_to_rgb', action='store_true')
+    parser.add_argument('--inference', action='store_true')
     #architecture
     parser.add_argument('--num_slots', type=int, default=2)
     parser.add_argument('--num_iterations', type=int, default=5)
