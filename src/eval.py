@@ -91,13 +91,12 @@ def main(args):
     batch_size = 1
     args.resolution = (128, 224)
 
-    # setup log and model path, initialize tensorboard,
+    print("setup log and model path, initialize tensorboard")
     [logPath, modelPath, resultsPath] = cg.setup_path(args)
 
-    # initialize dataloader
+    print("initialize dataloader")
     trn_dataset, val_dataset, resolution, in_out_channels, use_flow, loss_scale, ent_scale, cons_scale = cg.setup_dataset(args)
-    val_loader = ut.FastDataLoader(
-        val_dataset, num_workers=8, batch_size=1, shuffle=False, pin_memory=True, drop_last=False)
+    val_loader = ut.FastDataLoader(val_dataset, num_workers=8, batch_size=1, shuffle=False, pin_memory=True, drop_last=False)
     print("initialize model ")
     model = SlotAttentionAutoEncoder(resolution=resolution,
                                      num_slots=num_slots,
