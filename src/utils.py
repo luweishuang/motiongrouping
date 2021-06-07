@@ -31,6 +31,7 @@ def convert_for_vis(inp, use_flow=False):
             rgb = einops.rearrange(rgb, '(b s) h w c -> b s c h w', b=b, s=s)
         return torch.Tensor(rgb*255).type(torch.ByteTensor)
 
+
 def bb_intersection_over_union(boxA, boxB):
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(boxA[0], boxB[0])
@@ -55,12 +56,14 @@ def bb_intersection_over_union(boxA, boxB):
     # return the intersection over union value
     return iou
 
+
 def heuristic_fg_bg(mask):
     mask = mask.copy()
     h, w = mask.shape
     mask[1:-1, 1:-1] = 0
     borders = 2*h+2*w-4
     return np.sum(mask>0.5)/borders
+
 
 def rectangle_iou(masks, gt):
     t, s, c, H_, W_ = masks.size()
@@ -97,11 +100,13 @@ def rectangle_iou(masks, gt):
     masks = np.expand_dims(masks, 1)
     return masks, masks.mean(0), iou_mean, iou_single
 
+
 def iou(masks, gt, thres=0.5):
     masks = (masks>thres).float()
     intersect = torch.tensordot(masks, gt, dims=([-2, -1], [0, 1]))
     union = masks.sum(dim=[-2, -1]) + gt.sum(dim=[-2, -1]) - intersect
     return intersect/(union + 1e-12)
+
 
 def ensemble_hungarian_iou(masks, gt, moca=False):
     thres = 0.5

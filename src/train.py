@@ -7,13 +7,16 @@ import numpy as np
 import utils as ut
 import config as cg
 import torch
-import torchvision
 import torch.nn as nn
 import torch.optim as optim
 from tensorboardX import SummaryWriter
 from argparse import ArgumentParser
 from model import SlotAttentionAutoEncoder
 from eval import eval
+
+
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 
 def main(args):
     lr = args.lr
@@ -38,12 +41,12 @@ def main(args):
     val_loader = ut.FastDataLoader(
         val_dataset, num_workers=8, batch_size=1, shuffle=False, pin_memory=True, drop_last=False)
     # initialize model
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     model = SlotAttentionAutoEncoder(resolution=resolution,
                                      num_slots=num_slots,
                                      in_out_channels=in_out_channels,
                                      iters=iters)
-    model.to(device)
+    if DEVICE == "cuda":
+        model.to(DEVICE)
 
     # initialize training
     criterion = nn.MSELoss()
@@ -60,8 +63,7 @@ def main(args):
     else:
         print('training from scratch')
 
-
-    #save every eval_freq iterations
+    # save every eval_freq iterations
     moca = False
     monitor_train_iou = True
     log_freq = 100 #report train iou to tensorboard
@@ -81,19 +83,21 @@ def main(args):
     iou_best = 0
     timestart = time.time()
 
-
     # overfit single batch for debug
     # sample = next(iter(loader))
     while it < num_it:
         for _, sample in enumerate(trn_loader):
             #inference / evaluate on validation set
             if it % eval_freq == 0:
-                frame_mean_iou = eval(val_loader, model, device, moca, use_flow, it, writer=writer, train=True)
+                frame_mean_iou = eval(val_loader, model, DEVICE, moca, use_flow, it, writer=writer, train=True)
 
             optimizer.zero_grad()
             flow, gt = sample
-            gt = gt.float().to(device)
-            flow = flow.float().to(device)
+            gt = gt.float()
+            flow = flow.float()
+            if DEVICE == "cuda":
+                gt = gt.to(DEVICE)
+                flow = flow.to(DEVICE)
             flow = einops.rearrange(flow, 'b t c h w -> (b t) c h w')
             if monitor_train_iou:
                 gt = einops.rearrange(gt, 'b t c h w -> (b t) c h w')
@@ -104,8 +108,8 @@ def main(args):
             entropy_loss = ent_scale * -(masks * torch.log(masks + epsilon)).sum(dim=1).mean()
             # consistency loss, need to consider the permutation invariant nature.
             tmasks = einops.rearrange(masks, '(b t) s c h w -> b t s c h w', b=batch_size)
-            mask_t_1 = tmasks[:,0]
-            mask_t = tmasks[:,1]
+            mask_t_1 = tmasks[:, 0]
+            mask_t = tmasks[:, 1]
             mask_t = einops.rearrange(mask_t, 'b s c h w -> b c s h w')
             # c=1, so this is to broadcast the difference matrix
             temporal_diff = torch.pow((mask_t_1 - mask_t), 2).mean([-1, -2])
