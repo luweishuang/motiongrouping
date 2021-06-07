@@ -16,7 +16,7 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 print("DEVICE = ", DEVICE)
 
 
-def eval(val_loader, model, device, moca, use_flow, it, resultsPath=None, writer=None, train=False):
+def eval(val_loader, model, moca, use_flow, it, resultsPath=None, writer=None, train=False):
     with torch.no_grad():
         ious = {}
         single_step_ious = {}
@@ -25,10 +25,10 @@ def eval(val_loader, model, device, moca, use_flow, it, resultsPath=None, writer
         for idx, val_sample in enumerate(val_loader):
             flows, gt, meta, fgap = val_sample
             flows = flows.float()  # b t c h w
-            gt = gt.float() # b c h w
+            gt = gt.float()   # b c h w
             if DEVICE == "cuda":
-                flows.to(device)
-                gt.to(device)
+                flows.to(DEVICE)
+                gt.to(DEVICE)
             category, index = meta[0][0], meta[1][0]
 
             if category not in ious.keys(): ious[category] = []
@@ -128,7 +128,7 @@ def main(args):
 
     print('======> start inference {}, {}, use {}.'.format(args.dataset, args.verbose, DEVICE))
     # evaluate on validation set
-    eval(val_loader, model, DEVICE, moca, use_flow, it, resultsPath=resultsPath, train=False)
+    eval(val_loader, model, moca, use_flow, it, resultsPath=resultsPath, train=False)
 
 
 if __name__ == "__main__":
