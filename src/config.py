@@ -58,8 +58,8 @@ def setup_dataset(args):
     with_gt = True
     pairs = [1, 2, -1, -2]
     if args.dataset == 'DAVIS':
-        basepath = '/data/pfc/motionGrouping/DAVIS'
-        # basepath = "/data/motionGrouping/data/DAVIS2016"
+        # basepath = '/data/pfc/motionGrouping/DAVIS'
+        basepath = "/data/motionGrouping/data/DAVIS2016"
         img_dir = os.path.join(basepath, 'JPEGImages/480p')
         gt_dir = os.path.join(basepath, 'Annotations/480p')
 
@@ -75,13 +75,14 @@ def setup_dataset(args):
         img_dir = os.path.join(basepath, 'JPEGImages/')
         gt_dir = os.path.join(basepath, 'Annotations/')
 
-        val_flow_dir = os.path.join(basepath, '/path/to/FBMS_val/Flows_gap1/')
+        basepath_val = '/data/motionGrouping/data/FBMS_val'
+        val_flow_dir = os.path.join(basepath_val, 'Flows_gap1/')
         val_seq = ['camel01', 'cars1', 'cars10', 'cars4', 'cars5', 'cats01', 'cats03', 'cats06', 
                     'dogs01', 'dogs02', 'farm01', 'giraffes01', 'goats01', 'horses02', 'horses04', 
                     'horses05', 'lion01', 'marple12', 'marple2', 'marple4', 'marple6', 'marple7', 'marple9', 
                     'people03', 'people1', 'people2', 'rabbits02', 'rabbits03', 'rabbits04', 'tennis']
-        val_img_dir = '/path/to/FBMS_val/JPEGImages/'
-        val_gt_dir ='/path/to/FBMS_val/Annotations/'
+        val_img_dir = os.path.join(basepath_val, 'JPEGImages/')
+        val_gt_dir = os.path.join(basepath_val, 'Annotations/')
         val_data_dir = [val_flow_dir, val_img_dir, val_gt_dir]
         with_gt = False
         pairs = [3, 6, -3, -6]
@@ -95,7 +96,7 @@ def setup_dataset(args):
                     'hummingbird', 'soldier', 'bmx', 'frog', 'penguin', 'monkey', 'bird_of_paradise']
         val_data_dir = [val_flow_dir, img_dir, gt_dir]
     elif args.dataset == 'MoCA':
-        basepath = '/data/motionGrouping/data/MoCA/MoCA_filtered'
+        basepath = '/data/motionGrouping/data/MoCA_filtered'
         img_dir = os.path.join(basepath, 'JPEGImages')
         gt_dir = os.path.join(basepath, 'Annotations')
 

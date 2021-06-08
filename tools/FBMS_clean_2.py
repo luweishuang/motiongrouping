@@ -3,28 +3,28 @@ import shutil
 import numpy as np
 import cv2
 
-base_dir = '/path/to/FBMS_clean/'
-save_dir = '/path/to/FBMS_val/'
+base_dir = '/data/motionGrouping/data/FBMS_clean'
+save_dir = '/data/motionGrouping/data/FBMS_val'
 os.makedirs(save_dir, exist_ok=True)
-im_save_dir = '/path/to/FBMS_val/JPEGImages'
+im_save_dir = os.path.join(save_dir, 'JPEGImages')
 os.makedirs(im_save_dir, exist_ok=True)
-anno_save_dir = '/path/to/FBMS_val/Annotations'
+anno_save_dir = os.path.join(save_dir, 'Annotations')
 os.makedirs(anno_save_dir, exist_ok=True)
 
-flow_dirs = ['/path/to/FBMS_clean/Flows_gap-1/',
-            '/path/to/FBMS_clean/Flows_gap-2/',
-            '/path/to/FBMS_clean/Flows_gap1/',
-            '/path/to/FBMS_clean/Flows_gap2/']
+flow_dirs = [os.path.join(base_dir,  'Flows_gap-1/'),
+            os.path.join(base_dir, 'Flows_gap-2/'),
+            os.path.join(base_dir, 'Flows_gap1/'),
+            os.path.join(base_dir, 'Flows_gap2/')]
 
-flow_save_dirs = ['/path/to/FBMS_val/Flows_gap-1/',
-                '/path/to/FBMS_val/Flows_gap-2/',
-                '/path/to/FBMS_val/Flows_gap1/',
-                '/path/to/FBMS_val/Flows_gap2/']
+flow_save_dirs = [os.path.join(save_dir, 'Flows_gap-1/'),
+                os.path.join(save_dir, 'Flows_gap-2/'),
+                os.path.join(save_dir, 'Flows_gap1/'),
+                os.path.join(save_dir, 'Flows_gap2/')]
 
 for f in flow_save_dirs:
     os.makedirs(f, exist_ok=True)
 
-test_vids = ['camel01', 'cars1', 'cars10', 'cars4', 'cars5', 'cats01', 'cats03', 'cats06', 
+test_vids = ['camel01', 'cars1', 'cars10', 'cars4', 'cars5', 'cats01', 'cats03', 'cats06',
             'dogs01', 'dogs02', 'farm01', 'giraffes01', 'goats01', 'horses02', 'horses04', 
             'horses05', 'lion01', 'marple12', 'marple2', 'marple4', 'marple6', 'marple7', 'marple9', 
             'people03', 'people1', 'people2', 'rabbits02', 'rabbits03', 'rabbits04', 'tennis']

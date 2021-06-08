@@ -2,13 +2,15 @@ import os
 import shutil
 import numpy as np
 import cv2
+import re
 
-base_dir = '/path/to/FBMS/'
-save_dir = '/path/to/FBMS_clean/'
+
+base_dir = '/data/motionGrouping/data/FBMS/'
+save_dir = '/data/motionGrouping/data/FBMS_clean'
 os.makedirs(save_dir, exist_ok=True)
-im_save_dir = '/path/to/FBMS_clean/JPEGImages'
+im_save_dir = os.path.join(save_dir, 'JPEGImages')
 os.makedirs(im_save_dir, exist_ok=True)
-anno_save_dir = '/path/to/FBMS_clean/Annotations'
+anno_save_dir = os.path.join(save_dir, 'Annotations')
 os.makedirs(anno_save_dir, exist_ok=True)
 
 
@@ -23,6 +25,7 @@ test_vids = ['camel01', 'cars1', 'cars10', 'cars4', 'cars5', 'cats01', 'cats03',
             'horses05', 'lion01', 'marple12', 'marple2', 'marple4', 'marple6', 'marple7', 'marple9', 
             'people03', 'people1', 'people2', 'rabbits02', 'rabbits03', 'rabbits04', 'tennis']
 all_vids = train_vids + test_vids
+
 
 def find_gt(directory):
     all_files = os.listdir(directory)
@@ -48,6 +51,7 @@ def find_gt(directory):
     numbers = [int(file.split('_')[1]) for file in all_files]
     return all_files, numbers, type_weird
 
+
 for vid in all_vids:
     if vid in train_vids:
         vid_dir = os.path.join(base_dir, "Trainingset", vid)
@@ -59,9 +63,9 @@ for vid in all_vids:
     save1 = os.path.join(im_save_dir, vid)
     os.makedirs(save1, exist_ok=True)
     for i, im in enumerate(images):
-    	img = os.path.join(vid_dir, im)
-    	save_name = str(i+1).zfill(5) + ".jpg"
-    	shutil.copy2(img, os.path.join(save1, save_name))
+        img = os.path.join(vid_dir, im)
+        save_name = str(i+1).zfill(5) + ".jpg"
+        shutil.copy2(img, os.path.join(save1, save_name))
 
     anno_dir = os.path.join(vid_dir, "GroundTruth")
     annotation_fnames, n_with_gt, type_weird = find_gt(anno_dir)

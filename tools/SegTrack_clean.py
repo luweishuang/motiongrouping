@@ -13,8 +13,8 @@ def combine(dir1, dir2):
 
 cats = ['hummingbird', 'drift', 'bmx', 'monkeydog', 'cheetah']
 for cat in cats:
-	dir1 = sorted(gb.glob('/scratch/shared/beegfs/charig/SegTrackv2/Annotations/{}/1/*.png'.format(cat)))
-	dir2 = sorted(gb.glob('/scratch/shared/beegfs/charig/SegTrackv2/Annotations/{}/2/*.png'.format(cat)))
+	dir1 = sorted(gb.glob('/data/motionGrouping/data/SegTrackv2/Annotations/{}/1/*.png'.format(cat)))
+	dir2 = sorted(gb.glob('/data/motionGrouping/data/SegTrackv2/Annotations/{}/2/*.png'.format(cat)))
 	combine(dir1, dir2)
 
 """

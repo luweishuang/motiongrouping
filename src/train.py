@@ -1,8 +1,6 @@
 import os
 import time
 import einops
-import sys
-import cv2
 import numpy as np
 import utils as ut
 import config as cg

@@ -8,6 +8,7 @@ import glob
 import pandas as pd
 from argparse import ArgumentParser
 
+
 def read_annotation(annotation):
 	reader = csv.reader(open(annotation, 'r'))
 	next(reader, None) 
@@ -38,6 +39,7 @@ def read_annotation(annotation):
 			d[name][number]['ymax'] = ymin + height
 	return d
 
+
 def bb_intersection_over_union(boxA, boxB):
     # determine the (x, y)-coordinates of the intersection rectangle
     xA = max(boxA[0], boxB[0])
@@ -62,12 +64,14 @@ def bb_intersection_over_union(boxA, boxB):
     # return the intersection over union value
     return iou
 
+
 def heuristic_fg_bg(mask):
     mask = mask.copy()
     h, w = mask.shape
     mask[1:-1, 1:-1] = 0
     borders = 2*h+2*w-4
     return np.sum(mask>127.5)/borders
+
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -92,7 +96,7 @@ def main(args):
     #create output directory, and csv file
     if not os.path.exists(args.out_dir):
         os.mkdir(args.out_dir)
-    cout_csv = os.path.join(args.out_dir,'MoCA_results.csv')
+    cout_csv = os.path.join(args.out_dir, 'MoCA_results.csv')
     
     with open(cout_csv, 'w') as f:
        df = pd.DataFrame([], columns = ['Seq_name','Locomotion_IoU','Locomotion_S_0.5','Locomotion_S_0.6','Locomotion_S_0.7','Locomotion_S_0.8','Locomotion_S_0.9',
@@ -110,9 +114,7 @@ def main(args):
 
     annotations = read_annotation(args.MoCA_csv)
     Js = AverageMeter()
-    
 
-    
     thresholds = [0.5, 0.6, 0.7, 0.8, 0.9]
     success_rates_overall = np.zeros(5)
     total_frames_l = 0
@@ -154,8 +156,6 @@ def main(args):
                 y_min = annotations[video][number]['ymin']
                 y_max = annotations[video][number]['ymax']
                 bbox_gt = [x_min,y_min,x_max,y_max]
-                
-                
 
                 #get mask
                 mask = np.array(cv2.imread(res_list[ff]), dtype=np.uint8)
@@ -169,9 +169,7 @@ def main(args):
                 thres = 0.1*255
                 mask[mask>thres]=255
                 mask[mask<=thres]=0
-                
-                
-                    
+
                 contours = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
                 area = 0
 
@@ -181,8 +179,7 @@ def main(args):
                         x=x_; y=y_; w=w_; h=h_;
                         area = w_ * h_
                 H_, W_ = mask.shape
-                
-                
+
                 #cv2.imwrite(os.path.join(args.out_dir, video, number +'.png'), mask)
                 if area>0:
                     bbox = np.array([x, y, x+w, y+h],dtype=float)
@@ -272,9 +269,7 @@ def main(args):
     info = info.format(Js.avg, success_rates_overall[0], success_rates_overall[1], success_rates_overall[2], success_rates_overall[3], success_rates_overall[4])
     
     print(info)
-
     return
-
 
 
 if __name__ == "__main__":

@@ -118,9 +118,7 @@ categories = ['arabian_horn_viper', 'arctic_fox_1', 'arctic_wolf_1', 'black_cat_
 				'polar_bear_1', 'spider_tailed_horned_viper_1']
 
 for category in categories:
-
 	#get the indices for the annotations to choose the right category
-
 	anno_indices = [n for n,x in enumerate(anno_cats) if x==category]
 	image_ids = [anno_nums[i] for i in anno_indices]
 
@@ -181,7 +179,7 @@ for category in categories:
 	print(category)
 	
 	for i in range(min(num_images, 300)):
-		#read image
+		# read image
 		image_dir = os.path.join(category_dir, category, images[i])
 		img = cv2.imread(image_dir)
 		x = X_s[i]
@@ -189,21 +187,21 @@ for category in categories:
 		w = W_s[i]
 		h = H_s[i]
 
-		#save original
+		# save original
 		anno_img = np.zeros([H, W, 1])
 		anno_img[int(y):int(y+h), int(x):int(x+w)] = 255.
 		os.makedirs(os.path.join(base_dir, "Annotations_original", category), exist_ok=True)
 		save_dir = os.path.join(base_dir, "Annotations_original", category,'{:05d}.png'.format(i))
 		cv2.imwrite(save_dir, anno_img)
 
-		#get the cropped
+		# get the cropped
 		img_combined = np.concatenate([img, anno_img], -1)
 		img_crop = img_combined[y_low:y_high, x_low:x_high]
 		img_crop = cv2.resize(img_crop, (W_, H_), cv2.INTER_NEAREST)
 		img = img_crop[:,:,:3]
 		anno_img = img_crop[:,:,3:4]
 
-		#save cropped
+		# save cropped
 		os.makedirs(os.path.join(base_dir, "Annotations_cropped", category), exist_ok=True)
 		os.makedirs(os.path.join(base_dir, "JPEGImages_cropped", category), exist_ok=True)
 		save_dir = os.path.join(base_dir, "Annotations_cropped", category,'{:05d}.png'.format(i))
