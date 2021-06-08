@@ -24,11 +24,12 @@ def eval(val_loader, model, moca, use_flow, it, resultsPath=None, writer=None, t
         print(' --> running inference')
         for idx, val_sample in enumerate(val_loader):
             flows, gt, meta, fgap = val_sample
-            flows = flows.float()  # b t c h w
-            gt = gt.float()   # b c h w
             if DEVICE == "cuda":
-                flows.to(DEVICE)
-                gt.to(DEVICE)
+                flows = flows.float().to(DEVICE)  # b t c h w
+                gt = gt.float().to(DEVICE)  # b c h w
+            else:
+                flows = flows.float()
+                gt = gt.float()
             category, index = meta[0][0], meta[1][0]
 
             if category not in ious.keys():
@@ -156,3 +157,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args.inference = True
     main(args)
+
+
+'''
+inference, time 102.64219832420349 acc = [0.5485] single_step_acc = [0.5551]
+'''
