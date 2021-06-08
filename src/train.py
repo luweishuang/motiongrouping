@@ -64,7 +64,7 @@ def main(args):
     # save every eval_freq iterations
     moca = False
     monitor_train_iou = True
-    log_freq = 100 #report train iou to tensorboard
+    log_freq = 100   # report train iou to tensorboard
     if args.dataset == "DAVIS": 
         eval_freq = 1e3
     elif args.dataset == "MoCA": 
@@ -77,7 +77,7 @@ def main(args):
     elif args.dataset == "STv2":
         eval_freq = 1e3
 
-    print('======> start training {}, {}, use {}.'.format(args.dataset, args.verbose, device))
+    print('======> start training {}, {}, use {}.'.format(args.dataset, args.verbose, DEVICE))
     iou_best = 0
     timestart = time.time()
 
@@ -87,15 +87,16 @@ def main(args):
         for _, sample in enumerate(trn_loader):
             #inference / evaluate on validation set
             if it % eval_freq == 0:
-                frame_mean_iou = eval(val_loader, model, DEVICE, moca, use_flow, it, writer=writer, train=True)
+                frame_mean_iou = eval(val_loader, model, moca, use_flow, it, writer=writer, train=True)
 
             optimizer.zero_grad()
             flow, gt = sample
-            gt = gt.float()
-            flow = flow.float()
             if DEVICE == "cuda":
                 gt = gt.to(DEVICE)
                 flow = flow.to(DEVICE)
+            else:
+                flows = flows.float()
+                gt = gt.float()
             flow = einops.rearrange(flow, 'b t c h w -> (b t) c h w')
             if monitor_train_iou:
                 gt = einops.rearrange(gt, 'b t c h w -> (b t) c h w')

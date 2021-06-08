@@ -78,7 +78,7 @@ def predict(args):
 
         for index, imfile1 in enumerate(images_):
             if args.reverse:
-                image1 = load_image(images[index+gap])
+                image1 = load_image(images[index + gap])
                 image2 = load_image(imfile1)
                 svfile = images[index+gap]
             else:

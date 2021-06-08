@@ -59,8 +59,10 @@ class FlowPair(Dataset):
             img_dir = gt_dir.split('/')[-2:]
 
             flows.append(readFlow(str(flo), self.resolution, self.to_rgb))
-            if self.with_rgb: rgbs.append(readRGB(rgb_dir, self.resolution))
-            if self.with_gt: gts.append(readSeg(gt_dir))
+            if self.with_rgb:
+                rgbs.append(readRGB(rgb_dir, self.resolution))
+            if self.with_gt:
+                gts.append(readSeg(gt_dir))
             imgdirs.append(img_dir)
 
         out = np.stack(flows, 0) if not self.with_rgb else np.stack([np.stack(flows, 0), np.stack(rgbs, 0)], -1)

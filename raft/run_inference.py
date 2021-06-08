@@ -1,10 +1,12 @@
 import os
 import glob as gb
 
-data_path = "/data/pfc/motionGrouping/DAVIS2016"
+# data_path = "/data/pfc/motionGrouping/DAVIS2016"
+data_path = "/data/pfc/motionGrouping/ieemoo"
 gap = [1, 2]
 reverse = [0, 1]
-rgbpath = os.path.join(data_path, 'JPEGImages/1080p')  # path to the dataset
+# rgbpath = os.path.join(data_path, 'JPEGImages/1080p')  # path to the dataset
+rgbpath = os.path.join(data_path, 'JPEGImages')  # path to the dataset
 folder = gb.glob(os.path.join(rgbpath, '*'))
 
 cnt = 0
