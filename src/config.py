@@ -72,6 +72,7 @@ def setup_dataset(args):
         res = "1080p"
     elif args.dataset == 'ieemoo':
         basepath = "/data/motionGrouping/data/ieemoo"
+        # basepath = "/data/pfc/motionGrouping/ieemoo"
         img_dir = os.path.join(basepath, 'JPEGImages')
         gt_dir = gt_dir = os.path.join(basepath, 'Annotations')
         with_gt = False
@@ -147,9 +148,12 @@ def setup_dataset(args):
         p1, p2 = pair
         flowpairs = []
         for f in folders:
-            path1 = os.path.join(basepath, 'Flows_gap{}/{}/{}'.format(p1, res, f))
-            path2 = os.path.join(basepath, 'Flows_gap{}/{}/{}'.format(p2, res, f))
-
+            if "" != res:
+                path1 = os.path.join(basepath, 'Flows_gap{}/{}/{}'.format(p1, res, f))
+                path2 = os.path.join(basepath, 'Flows_gap{}/{}/{}'.format(p2, res, f))
+            else:
+                path1 = os.path.join(basepath, 'Flows_gap{}/{}'.format(p1, f))
+                path2 = os.path.join(basepath, 'Flows_gap{}/{}'.format(p2, f))
             flows1 = [os.path.basename(x) for x in gb.glob(os.path.join(path1, '*'))]
             flows2 = [os.path.basename(x) for x in gb.glob(os.path.join(path2, '*'))]
 

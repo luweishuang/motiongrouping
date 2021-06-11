@@ -89,7 +89,7 @@ def main(args):
     while it < num_it:
         for _, sample in enumerate(trn_loader):
             #inference / evaluate on validation set
-            if it % eval_freq == 0 and it > 0:
+            if it % eval_freq == 0:
                 frame_mean_iou = eval(val_loader, model, moca, use_flow, it, writer=writer, train=True)
 
             optimizer.zero_grad()

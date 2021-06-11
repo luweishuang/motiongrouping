@@ -81,6 +81,7 @@ class FlowEval(Dataset):
 
         self.samples = []
         for v in self.val_seq:
+            # images = glob.glob(os.path.join(self.data_dir[1], v, '*.jpg')) + glob.glob(os.path.join(self.data_dir[1], v, '*.png'))
             self.samples.extend(sorted(glob.glob(os.path.join(self.data_dir[1], v, '*.jpg'))))
         
         self.samples = [os.path.join(x.split('/')[-2], x.split('/')[-1]) for x in self.samples]
