@@ -77,11 +77,12 @@ def setup_dataset(args):
         with_gt = False
 
         val_flow_dir = os.path.join(basepath, 'Flows_gap1')
-        val_seq = ['video01186_0', 'video01186_2', 'video01299_0', 'video01299_2', 'video01831_0', 'video01831_2', 'video02109_0',
-                   'video02109_2', 'video04542_0', 'video04542_2', 'video04960_0', 'video04960_2', 'video05321_0', 'video05321_2',
-                   'video06009_0', 'video06009_2', 'video06455_0', 'video06455_2', 'video06748_0', 'video06748_2', 'video07764_0',
-                   'video07764_2', 'video08390_0', 'video08390_2', 'video08663_0', 'video08663_2', 'video08970_0', 'video08970_2',
-                   'video09079_0', 'video09079_2', 'video09285_0', 'video09285_2']
+        val_seq = ['video01299_2',  'video02109_0']
+        # val_seq = ['video01186_0', 'video01186_2', 'video01299_0', 'video01299_2', 'video01831_0', 'video01831_2', 'video02109_0',
+        #            'video02109_2', 'video04542_0', 'video04542_2', 'video04960_0', 'video04960_2', 'video05321_0', 'video05321_2',
+        #            'video06009_0', 'video06009_2', 'video06455_0', 'video06455_2', 'video06748_0', 'video06748_2', 'video07764_0',
+        #            'video07764_2', 'video08390_0', 'video08390_2', 'video08663_0', 'video08663_2', 'video08970_0', 'video08970_2',
+        #            'video09079_0', 'video09079_2', 'video09285_0', 'video09285_2']
         val_data_dir = [val_flow_dir, img_dir, gt_dir]
     elif args.dataset == 'FBMS':
         basepath = '/data/motionGrouping/data/FBMS_clean'
