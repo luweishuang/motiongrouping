@@ -73,7 +73,7 @@ def setup_dataset(args):
     elif args.dataset == 'ieemoo':
         basepath = "/data/motionGrouping/data/ieemoo"
         img_dir = os.path.join(basepath, 'JPEGImages')
-        gt_dir = None
+        gt_dir = gt_dir = os.path.join(basepath, 'Annotations')
         with_gt = False
 
         val_flow_dir = os.path.join(basepath, 'Flows_gap1')

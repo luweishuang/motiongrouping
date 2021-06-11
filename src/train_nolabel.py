@@ -35,9 +35,9 @@ def main(args):
     # initialize dataloader (validation bsz has to be 1 for FBMS, because of different resolutions, otherwise, can be >1)
     trn_dataset, val_dataset, resolution, in_out_channels, use_flow, loss_scale, ent_scale, cons_scale = cg.setup_dataset(args)
     trn_loader = ut.FastDataLoader(
-        trn_dataset, num_workers=8, batch_size=batch_size, shuffle=True, pin_memory=True, drop_last=True)
+        trn_dataset, num_workers=0, batch_size=batch_size, shuffle=True, pin_memory=True, drop_last=True)
     val_loader = ut.FastDataLoader(
-        val_dataset, num_workers=8, batch_size=1, shuffle=False, pin_memory=True, drop_last=False)
+        val_dataset, num_workers=0, batch_size=1, shuffle=False, pin_memory=True, drop_last=False)
     print("initialize model")
     model = SlotAttentionAutoEncoder(resolution=resolution,
                                      num_slots=num_slots,
@@ -69,6 +69,7 @@ def main(args):
         eval_freq = 1e3
     elif args.dataset == "ieemoo":
         eval_freq = 1e3
+        monitor_train_iou = False  # there is no train IoU to monitor
     elif args.dataset == "MoCA": 
         eval_freq = 1e4
         monitor_train_iou = False    # this is slow due to moca evaluation
@@ -88,7 +89,7 @@ def main(args):
     while it < num_it:
         for _, sample in enumerate(trn_loader):
             #inference / evaluate on validation set
-            if it % eval_freq == 0:
+            if it % eval_freq == 0 and it > 0:
                 frame_mean_iou = eval(val_loader, model, moca, use_flow, it, writer=writer, train=True)
 
             optimizer.zero_grad()
@@ -97,7 +98,7 @@ def main(args):
                 gt = gt.to(DEVICE)
                 flow = flow.to(DEVICE)
             else:
-                flows = flows.float()
+                flow = flow.float()
                 gt = gt.float()
             flow = einops.rearrange(flow, 'b t c h w -> (b t) c h w')
             if monitor_train_iou:
