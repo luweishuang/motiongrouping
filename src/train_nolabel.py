@@ -38,7 +38,7 @@ def main(args):
         trn_dataset, num_workers=8, batch_size=batch_size, shuffle=True, pin_memory=True, drop_last=True)
     val_loader = ut.FastDataLoader(
         val_dataset, num_workers=8, batch_size=1, shuffle=False, pin_memory=True, drop_last=False)
-    # initialize model
+    print("initialize model")
     model = SlotAttentionAutoEncoder(resolution=resolution,
                                      num_slots=num_slots,
                                      in_out_channels=in_out_channels,
@@ -46,7 +46,7 @@ def main(args):
     if DEVICE == "cuda":
         model.to(DEVICE)
 
-    # initialize training
+    print("initialize training")
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
