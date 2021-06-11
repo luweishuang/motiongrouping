@@ -16,7 +16,7 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 print("DEVICE = ", DEVICE)
 
 
-def eval_nolabel(val_loader, model, moca, use_flow, it, resultsPath=None, writer=None, train=False):
+def eval_nolabel(val_loader, model, use_flow, it, writer=None, train=False):
     with torch.no_grad():
         ious = {}
         single_step_ious = {}
@@ -26,10 +26,8 @@ def eval_nolabel(val_loader, model, moca, use_flow, it, resultsPath=None, writer
             flows, gt, meta, fgap = val_sample
             if DEVICE == "cuda":
                 flows = flows.float().to(DEVICE)  # b t c h w
-                gt = gt.float().to(DEVICE)  # b c h w
             else:
                 flows = flows.float()
-                gt = gt.float()
             category, index = meta[0][0], meta[1][0]
 
             if category not in ious.keys():

@@ -90,7 +90,7 @@ def main(args):
         for _, sample in enumerate(trn_loader):
             #inference / evaluate on validation set
             if it % eval_freq == 0:
-                frame_mean_iou = eval_nolabel(val_loader, model, moca, use_flow, it, writer=writer, train=True)
+                frame_mean_iou = eval_nolabel(val_loader, model, use_flow, it, writer=writer, train=True)
 
             optimizer.zero_grad()
             flow, gt = sample

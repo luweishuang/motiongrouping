@@ -32,9 +32,10 @@ def readRGB(sample_dir, resolution):
 def readSeg(sample_dir):
     if os.path.exists(sample_dir):
         gt = cv2.imread(sample_dir) / 255
+        return einops.rearrange(gt, 'h w c -> c h w')
     else:
-        gt = 0
-    return einops.rearrange(gt, 'h w c -> c h w')
+        return 0
+
 
 
 class FlowPair(Dataset):
