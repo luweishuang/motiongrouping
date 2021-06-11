@@ -90,7 +90,7 @@ def main(args):
         for _, sample in enumerate(trn_loader):
             #inference / evaluate on validation set
             if it % eval_freq == 0:
-                frame_mean_iou = eval_nolabel(val_loader, model, use_flow, it, writer=writer, train=True)
+                eval_nolabel(val_loader, model, use_flow, it, writer=writer, train=True)
 
             optimizer.zero_grad()
             flow, gt = sample
@@ -137,15 +137,14 @@ def main(args):
                     writer.add_scalar('IOU/train', iou, it)
 
             # save model
-            if it % eval_freq == 0 and frame_mean_iou > iou_best:  
-                filename = os.path.join(modelPath, 'checkpoint_{}_iou_{}.pth'.format(it, np.round(frame_mean_iou, 3)))
+            if it % eval_freq == 0:
+                filename = os.path.join(modelPath, 'checkpoint_{}.pth'.format(it))
                 torch.save({
                     'iteration': it,
                     'model_state_dict': model.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
                     'loss': loss,
                     }, filename)
-                iou_best = frame_mean_iou
 
             # LR warmup
             if it < warmup_it:
