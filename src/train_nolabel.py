@@ -57,12 +57,10 @@ def main(args):
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         it = checkpoint['iteration']
-        loss = checkpoint['loss']
     else:
         print('training from scratch')
 
     # save every eval_freq iterations
-    moca = False
     monitor_train_iou = True
     log_freq = 100   # report train iou to tensorboard
     if args.dataset == "DAVIS": 
@@ -73,7 +71,6 @@ def main(args):
     elif args.dataset == "MoCA": 
         eval_freq = 1e4
         monitor_train_iou = False    # this is slow due to moca evaluation
-        moca = True
     elif args.dataset == "FBMS":
         eval_freq = 1e3
         monitor_train_iou = False    # there is no train IoU to monitor
@@ -81,7 +78,6 @@ def main(args):
         eval_freq = 1e3
 
     print('======> start training {}, {}, use {}.'.format(args.dataset, args.verbose, DEVICE))
-    iou_best = 0
     timestart = time.time()
 
     # overfit single batch for debug
@@ -163,7 +159,7 @@ def main(args):
 if __name__ == "__main__":
     parser = ArgumentParser()
     #optimization
-    parser.add_argument('--batch_size', type=int, default=32)
+    parser.add_argument('--batch_size', type=int, default=64)
     parser.add_argument('--lr', type=float, default=5e-4)
     parser.add_argument('--num_train_steps', type=int, default=5e9)
     parser.add_argument('--warmup_steps', type=int, default=200)
