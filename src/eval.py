@@ -51,17 +51,7 @@ def eval_nolabel(val_loader, model, use_flow, it, writer=None, train=False):
                     grid_all = torchvision.utils.make_grid(grid_all, nrow=nrow)
                     writer.add_image('val/images', grid_all, it+idx)
 
-        frameious = sum(ious.values(), [])
-        single_step_frameious = sum(single_step_ious.values(), [])
-        frame_mean_iou = sum(frameious) / len(frameious)
-        frame_single_step_mean_iou = sum(single_step_frameious) / len(single_step_frameious)
-        print(' --> inference, time {}'.format(time.time()-t),
-            'acc = {}'.format(np.round(frame_mean_iou, 4)),
-            'single_step_acc = {}'.format(np.round(frame_single_step_mean_iou, 4)))
-        if train:
-            writer.add_scalar('IOU/val_mean', frame_mean_iou, it)
-            writer.add_scalar('IOU/val_single_step_mean', frame_single_step_mean_iou, it)
-            return frame_mean_iou
+        print(' --> inference, time {}'.format(time.time()-t))
 
 
 def eval(val_loader, model, moca, use_flow, it, resultsPath=None, writer=None, train=False):
