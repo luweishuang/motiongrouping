@@ -21,7 +21,6 @@ def eval_nolabel(val_loader, model, use_flow, it, writer=None, train=False):
         ious = {}
         single_step_ious = {}
         t = time.time()
-        print(' --> running inference')
         for idx, val_sample in enumerate(val_loader):
             flows, gt, meta, fgap = val_sample
             if DEVICE == "cuda":
@@ -36,7 +35,6 @@ def eval_nolabel(val_loader, model, use_flow, it, writer=None, train=False):
                 single_step_ious[category] = []
             # run inference
             flows = einops.rearrange(flows, 'b t c h w -> (b t) c h w')
-            print("eval run model ")
             recon_image, recons, masks, _ = model(flows)  # t s 1 h w
             masks = einops.rearrange(masks, '(b t) s c h w -> b t s c h w', t=4)
 
