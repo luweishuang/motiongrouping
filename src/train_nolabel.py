@@ -10,7 +10,7 @@ import torch.optim as optim
 from tensorboardX import SummaryWriter
 from argparse import ArgumentParser
 from model import SlotAttentionAutoEncoder
-from eval import eval
+from eval import eval, eval_nolabel
 
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -90,7 +90,7 @@ def main(args):
         for _, sample in enumerate(trn_loader):
             #inference / evaluate on validation set
             if it % eval_freq == 0:
-                frame_mean_iou = eval(val_loader, model, moca, use_flow, it, writer=writer, train=True)
+                frame_mean_iou = eval_nolabel(val_loader, model, moca, use_flow, it, writer=writer, train=True)
 
             optimizer.zero_grad()
             flow, gt = sample

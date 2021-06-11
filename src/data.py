@@ -19,6 +19,7 @@ def readFlow(sample_dir, resolution, to_rgb):
     if to_rgb: flow = np.clip((flow2rgb(flow) - 0.5) * 2, -1., 1.)
     return einops.rearrange(flow, 'h w c -> c h w')
 
+
 def readRGB(sample_dir, resolution):
     rgb = cv2.imread(sample_dir)
     rgb = cv2.cvtColor(rgb, cv2.COLOR_BGR2RGB)
@@ -29,7 +30,10 @@ def readRGB(sample_dir, resolution):
 
 
 def readSeg(sample_dir):
-    gt = cv2.imread(sample_dir) / 255
+    if os.path.exists(sample_dir):
+        gt = cv2.imread(sample_dir) / 255
+    else:
+        gt = 0
     return einops.rearrange(gt, 'h w c -> c h w')
 
 

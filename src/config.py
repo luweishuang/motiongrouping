@@ -71,8 +71,8 @@ def setup_dataset(args):
         val_data_dir = [val_flow_dir, img_dir, gt_dir]
         res = "1080p"
     elif args.dataset == 'ieemoo':
-        basepath = "/data/motionGrouping/data/ieemoo"
-        # basepath = "/data/pfc/motionGrouping/ieemoo"
+        # basepath = "/data/motionGrouping/data/ieemoo"
+        basepath = "/data/pfc/motionGrouping/ieemoo"
         img_dir = os.path.join(basepath, 'JPEGImages')
         gt_dir = gt_dir = os.path.join(basepath, 'Annotations')
         with_gt = False

@@ -16,6 +16,58 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 print("DEVICE = ", DEVICE)
 
 
+def eval_nolabel(val_loader, model, moca, use_flow, it, resultsPath=None, writer=None, train=False):
+    with torch.no_grad():
+        ious = {}
+        single_step_ious = {}
+        t = time.time()
+        print(' --> running inference')
+        for idx, val_sample in enumerate(val_loader):
+            flows, gt, meta, fgap = val_sample
+            if DEVICE == "cuda":
+                flows = flows.float().to(DEVICE)  # b t c h w
+                gt = gt.float().to(DEVICE)  # b c h w
+            else:
+                flows = flows.float()
+                gt = gt.float()
+            category, index = meta[0][0], meta[1][0]
+
+            if category not in ious.keys():
+                ious[category] = []
+            if category not in single_step_ious.keys():
+                single_step_ious[category] = []
+            # run inference
+            flows = einops.rearrange(flows, 'b t c h w -> (b t) c h w')
+            print("eval run model ")
+            recon_image, recons, masks, _ = model(flows)  # t s 1 h w
+            masks = einops.rearrange(masks, '(b t) s c h w -> b t s c h w', t=4)
+
+            if train:
+                if np.random.random() > 0.95:
+                    grid = ut.convert_for_vis(flows.unsqueeze(1), use_flow=use_flow)
+                    grid_ri = ut.convert_for_vis(recon_image, use_flow=use_flow).unsqueeze(1)
+                    grid_r = ut.convert_for_vis(recons, use_flow=use_flow)
+                    grid_m = (255*torch.cat([masks, masks, masks], dim=3)).type(torch.ByteTensor)
+                    grid_m = einops.rearrange(grid_m, 'b t s c h w -> (b t) s c h w')
+                    grid_all = torch.cat([grid, grid_ri, grid_m, grid_r], dim=1)
+                    nrow = grid_all.size()[1]
+                    grid_all = einops.rearrange(grid_all, 'b s c h w -> (b s) c h w')
+                    grid_all = torchvision.utils.make_grid(grid_all, nrow=nrow)
+                    writer.add_image('val/images', grid_all, it+idx)
+
+        frameious = sum(ious.values(), [])
+        single_step_frameious = sum(single_step_ious.values(), [])
+        frame_mean_iou = sum(frameious) / len(frameious)
+        frame_single_step_mean_iou = sum(single_step_frameious) / len(single_step_frameious)
+        print(' --> inference, time {}'.format(time.time()-t),
+            'acc = {}'.format(np.round(frame_mean_iou, 4)),
+            'single_step_acc = {}'.format(np.round(frame_single_step_mean_iou, 4)))
+        if train:
+            writer.add_scalar('IOU/val_mean', frame_mean_iou, it)
+            writer.add_scalar('IOU/val_single_step_mean', frame_single_step_mean_iou, it)
+            return frame_mean_iou
+
+
 def eval(val_loader, model, moca, use_flow, it, resultsPath=None, writer=None, train=False):
     with torch.no_grad():
         ious = {}
