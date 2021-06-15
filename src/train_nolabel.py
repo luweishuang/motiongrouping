@@ -1,7 +1,6 @@
 import os
 import time
 import einops
-import numpy as np
 import utils as ut
 import config as cg
 import torch
@@ -10,7 +9,7 @@ import torch.optim as optim
 from tensorboardX import SummaryWriter
 from argparse import ArgumentParser
 from model import SlotAttentionAutoEncoder
-from eval import eval, eval_nolabel
+from eval import eval_nolabel
 
 
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'

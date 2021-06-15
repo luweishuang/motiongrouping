@@ -118,8 +118,12 @@ def ensemble_hungarian_iou(masks, gt, moca=False):
         masks, mean_mask, iou_mean, iou_single_gap = rectangle_iou(masks, gt)
     else:
         masks = F.interpolate(masks, size=(1, h, w))  # t s 1 h w
-        mask_iou = iou(masks[:,:,0], gt, thres)  # t s # t s
+        mask_iou = iou(masks[:, :, 0], gt, thres)  # t s # t s
         iou_max, slot_max = mask_iou.max(dim=1)
+        # ll = torch.zeros(masks.size(0),  dtype=torch.int64)
+        # if not torch.equal(slot_max, ll):     # slot_max != torch.zeros(masks.size(0)):
+        #     print(slot_max)       # sometimes not equal, like tensor([0, 0, 0, 1]) tensor([0, 1, 0, 0]) tensor([1, 0, 0, 0])
+        #     print("--------------error------------")
         masks = masks[torch.arange(masks.size(0)), slot_max]  # pick the slot for each mask
         mean_mask = masks.mean(0)
         gap_1_mask = masks[0]  # note last frame will use gap of -1, not major.
@@ -129,6 +133,16 @@ def ensemble_hungarian_iou(masks, gt, moca=False):
         masks = masks.detach().cpu().numpy()
 
     return masks, mean_mask, iou_mean, iou_single_gap
+
+
+def ensemble_hungarian_iou_noGT(masks, h, w):
+    masks = F.interpolate(masks, size=(1, h, w))  # t s 1 h w
+    slot_max = torch.zeros(masks.size(0), dtype=torch.int64)
+    masks = masks[torch.arange(masks.size(0)), slot_max]  # pick the slot for each mask
+    mean_mask = masks.mean(0)
+    mean_mask = mean_mask.detach().cpu().numpy()  # c h w
+    masks = masks.detach().cpu().numpy()
+    return masks, mean_mask
 
 
 def hungarian_iou(masks, gt):
