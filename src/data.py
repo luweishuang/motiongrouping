@@ -37,7 +37,6 @@ def readSeg(sample_dir):
         return 0
 
 
-
 class FlowPair(Dataset):
     def __init__(self, data_dir, resolution, to_rgb=False, with_rgb=False, with_gt=True):
         self.eval = eval
@@ -117,3 +116,4 @@ class FlowEval(Dataset):
         gt_dir = os.path.join(self.data_dir[2], self.samples[idx]).replace('.jpg', '.png')
         img_dir = gt_dir.split('/')[-2:]
         return out, readSeg(gt_dir), img_dir, fgap
+

@@ -2,8 +2,6 @@ import torch
 import einops
 import numpy as np
 import torch.nn as nn
-import torch.nn.functional as F
-from torch.autograd import Variable
 
 
 def build_grid(resolution):
@@ -18,21 +16,21 @@ def build_grid(resolution):
 
 
 class SoftPositionEmbed(nn.Module):
-  """Adds soft positional embedding with learnable projection."""
+    """Adds soft positional embedding with learnable projection."""
 
-  def __init__(self, hidden_size, resolution):
-    """Builds the soft position embedding layer.
+    def __init__(self, hidden_size, resolution):
+        """Builds the soft position embedding layer.
 
-    Args:
-      hidden_size: Size of input feature dimension.
-      resolution: Tuple of integers specifying width and height of grid.
-    """
-    super(SoftPositionEmbed, self).__init__()
-    self.proj = nn.Linear(4, hidden_size)
-    self.grid = build_grid(resolution)
+        Args:
+          hidden_size: Size of input feature dimension.
+          resolution: Tuple of integers specifying width and height of grid.
+        """
+        super(SoftPositionEmbed, self).__init__()
+        self.proj = nn.Linear(4, hidden_size)
+        self.grid = build_grid(resolution)
 
-  def forward(self, inputs):
-    return inputs + self.proj(self.grid)
+    def forward(self, inputs):
+        return inputs + self.proj(self.grid)
 
 
 def spatial_broadcast(slots, resolution):
@@ -45,7 +43,7 @@ def spatial_broadcast(slots, resolution):
 
 
 def spatial_flatten(x):
-  return torch.reshape(x, [-1, x.shape[1] * x.shape[2], x.shape[-1]])
+    return torch.reshape(x, [-1, x.shape[1] * x.shape[2], x.shape[-1]])
 
 
 def unstack_and_split(x, batch_size, num_channels=3):
@@ -216,7 +214,6 @@ class SlotAttentionAutoEncoder(nn.Module):
                            conv2, nn.InstanceNorm2d(v, affine=True), nn.ReLU(inplace=True)]
                 in_channels = v
         return nn.Sequential(*layers), 2 ** down_factor
-
 
     def forward(self, image):
         # `image` has shape: [batch_size, num_channels, height, width].
