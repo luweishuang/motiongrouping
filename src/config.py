@@ -78,7 +78,7 @@ def setup_dataset(args):
         with_gt = False
 
         val_flow_dir = os.path.join(basepath, 'Flows_gap1')
-        val_seq = ['video01299_2',  'video02109_0']
+        val_seq = ['video01299_2',  'video02109_0']   # len(video01299_2)=500,  len(video02109_0)=1351
         # val_seq = ['video01186_0', 'video01186_2', 'video01299_0', 'video01299_2', 'video01831_0', 'video01831_2', 'video02109_0',
         #            'video02109_2', 'video04542_0', 'video04542_2', 'video04960_0', 'video04960_2', 'video05321_0', 'video05321_2',
         #            'video06009_0', 'video06009_2', 'video06455_0', 'video06455_2', 'video06748_0', 'video06748_2', 'video07764_0',

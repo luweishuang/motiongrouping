@@ -3,11 +3,9 @@ import time
 import einops
 import sys
 import cv2
-import numpy as np
 import utils as ut
 import config as cg
 import torch
-import torchvision
 import torch.optim as optim
 from argparse import ArgumentParser
 from model import SlotAttentionAutoEncoder
@@ -20,20 +18,23 @@ def infer(val_loader, model, resultsPath=None, train=False):
     if args.dataset == "DAVIS":
         h = 480
         w = 854
+    elif args.dataset == "ieemoo":
+        h = 480
+        w = 640
     with torch.no_grad():
         t = time.time()
         print(' --> running inference')
         for idx, val_sample in enumerate(val_loader):
             flows, gt, meta, fgap = val_sample
+
             if DEVICE == "cuda":
                 flows = flows.float().to(DEVICE)  # b t c h w
             else:
                 flows = flows.float()
             category, index = meta[0][0], meta[1][0]
-
+            print(' --> running inference, category: %s, index = %s' % (category, index))
             # run inference
             flows = einops.rearrange(flows, 'b t c h w -> (b t) c h w')
-            print("eval run model ")
             recon_image, recons, masks, _ = model(flows)  # t s 1 h w
             masks = einops.rearrange(masks, '(b t) s c h w -> b t s c h w', t=4)
             for i in range(masks.size()[0]):
@@ -105,7 +106,7 @@ if __name__ == "__main__":
     parser.add_argument('--decay_steps', type=int, default=8e4)
     parser.add_argument('--decay_rate', type=float, default=0.5)
     #settings
-    parser.add_argument('--dataset', type=str, default='DAVIS', choices=['DAVIS', 'MoCA', 'FBMS', 'STv2'])
+    parser.add_argument('--dataset', type=str, default='ieemoo', choices=['DAVIS', 'MoCA', 'FBMS', 'STv2', 'ieemoo'])
     parser.add_argument('--with_rgb', action='store_true')
     parser.add_argument('--flow_to_rgb', action='store_true')
     parser.add_argument('--inference', action='store_true')
@@ -114,7 +115,8 @@ if __name__ == "__main__":
     parser.add_argument('--num_iterations', type=int, default=5)
     #misc
     parser.add_argument('--verbose', type=str, default=None)
-    parser.add_argument('--resume_path', type=str, default="../models/ckpt_davis.pth")
+    parser.add_argument('--resume_path', type=str, default="../models/ckpt_fbms.pth")
+    # parser.add_argument('--resume_path', type=str, default="../models/ieemoo/06_11/checkpoint_26000.pth")
     args = parser.parse_args()
     args.inference = True
     main(args)
