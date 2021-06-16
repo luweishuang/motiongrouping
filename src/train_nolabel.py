@@ -158,7 +158,7 @@ def main(args):
 if __name__ == "__main__":
     parser = ArgumentParser()
     #optimization
-    parser.add_argument('--batch_size', type=int, default=64)
+    parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--lr', type=float, default=5e-4)
     parser.add_argument('--num_train_steps', type=int, default=5e9)
     parser.add_argument('--warmup_steps', type=int, default=200)
@@ -173,7 +173,7 @@ if __name__ == "__main__":
     parser.add_argument('--num_iterations', type=int, default=5)
     #misc
     parser.add_argument('--verbose', type=str, default=None)
-    parser.add_argument('--resume_path', type=str, default=None)
+    parser.add_argument('--resume_path', type=str, default='../models/ckpt_davis.pth')
     args = parser.parse_args()
     args.inference = False
     main(args)
